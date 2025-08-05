@@ -1,7 +1,6 @@
 // This is the correct way to make the function globally accessible.
 // It must be defined outside of the DOMContentLoaded listener.
 window.showView = function(viewId) {
-    const appContainer = document.getElementById('app-container');
     const allViews = document.querySelectorAll('#home-view, #check-in-view, #current-visitors-view, #check-out-view, #past-visitors-view');
     const backButton = document.getElementById('back-to-home');
 
@@ -60,11 +59,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
     setInterval(updateTime, 1000);
     updateTime();
-
-    // --- Check-In Logic ---
-    const checkInForm = document.getElementById('check-in-form');
-    checkInForm.addEventListener('submit', (e) => {
+    
+    // Function to handle form submission logic
+    function handleCheckInFormSubmit(e) {
         e.preventDefault();
+
+        // Get contact info fields
+        const phoneNumber = document.getElementById('phoneNumber').value;
+        const emailAddress = document.getElementById('emailAddress').value;
+
+        // Validation for mandatory contact info
+        if (!phoneNumber && !emailAddress) {
+            const validationMessage = document.getElementById('contact-validation-message');
+            validationMessage.textContent = 'Please provide either a phone number or email address.';
+            validationMessage.classList.add('text-red-500');
+            return;
+        }
 
         const newVisitor = {
             id: Date.now(),
@@ -72,7 +82,7 @@ document.addEventListener('DOMContentLoaded', () => {
             lastName: document.getElementById('lastName').value,
             companyName: document.getElementById('companyName').value,
             purpose: document.getElementById('purpose').value,
-            contact: document.getElementById('phoneNumber').value || document.getElementById('emailAddress').value,
+            contact: phoneNumber || emailAddress, // Store whichever is provided
             checkInTime: new Date().toISOString(), // Store as ISO string for sorting
         };
 
@@ -80,7 +90,7 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.setItem('currentVisitors', JSON.stringify(currentVisitors));
 
         // Clear form
-        checkInForm.reset();
+        e.target.reset();
 
         // Show a confirmation message before returning to home view
         const checkInView = document.getElementById('check-in-view');
@@ -94,8 +104,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 <p class="mt-4 text-sm text-gray-500">Returning to home screen in 3 seconds...</p>
             </div>
         `;
+        
         setTimeout(() => {
-            // Restore the original form and go back to home
+            // Revert the view back to the original form
             checkInView.innerHTML = `
                 <div class="bg-white p-6 rounded-lg shadow-md text-gray-800">
                     <h2 class="text-2xl font-bold mb-2">Visitor Check-In</h2>
@@ -127,24 +138,21 @@ document.addEventListener('DOMContentLoaded', () => {
                             <p class="block text-sm font-medium text-gray-700">Contact Information</p>
                             <input type="tel" id="phoneNumber" name="phoneNumber" placeholder="Phone number" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500 sm:text-sm p-2 border border-gray-400">
                             <input type="email" id="emailAddress" name="emailAddress" placeholder="Email address" class="mt-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500 sm:text-sm p-2 border border-gray-400">
-                            <p class="text-xs text-gray-400 mt-1">Please provide either phone number or email address</p>
+                            <p class="text-xs text-gray-400 mt-1" id="contact-validation-message">Please provide either phone number or email address</p>
                         </div>
                         <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg transition duration-200">Sign In</button>
                     </form>
                 </div>
             `;
             // Re-attach the event listener to the new form element
-            const newForm = document.getElementById('check-in-form');
-            newForm.addEventListener('submit', handleCheckInFormSubmit);
+            document.getElementById('check-in-form').addEventListener('submit', handleCheckInFormSubmit);
             showView('home-view');
         }, 3000);
-    });
-
-    function handleCheckInFormSubmit(e) {
-        // This is a placeholder function to be able to re-attach the listener
-        e.preventDefault();
-        // ... (existing logic from the form submission event listener)
     }
+    
+    // Attach the initial event listener
+    document.getElementById('check-in-form').addEventListener('submit', handleCheckInFormSubmit);
+
 
     // --- Current Visitors Logic ---
     function displayCurrentVisitors(visitors) {
@@ -170,6 +178,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div>
                     <h3 class="font-bold">${visitor.firstName} ${visitor.lastName}</h3>
                     <p class="text-sm text-gray-500">${visitor.purpose} ${visitor.companyName ? `at ${visitor.companyName}` : ''}</p>
+                    <p class="text-xs text-gray-400">${visitor.contact || 'No contact info provided'}</p>
                 </div>
                 <div class="ml-auto text-right text-sm">
                     <p class="text-gray-500">Checked in at</p>
@@ -218,6 +227,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div>
                     <h3 class="font-bold">${visitor.firstName} ${visitor.lastName}</h3>
                     <p class="text-sm text-gray-500">${visitor.purpose} ${visitor.companyName ? `at ${visitor.companyName}` : ''}</p>
+                    <p class="text-xs text-gray-400">${visitor.contact || 'No contact info provided'}</p>
                 </div>
                 <div class="ml-auto text-right text-sm">
                     <p class="text-gray-500">Checked in at</p>
@@ -257,7 +267,6 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
             setTimeout(() => {
                 showView('home-view');
-                // The next time the checkout page is opened, it will be refreshed by showView
             }, 3000);
         }
     }
@@ -301,6 +310,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div>
                     <h3 class="font-bold">${visitor.firstName} ${visitor.lastName}</h3>
                     <p class="text-sm text-gray-500">${visitor.purpose} ${visitor.companyName ? `at ${visitor.companyName}` : ''}</p>
+                    <p class="text-xs text-gray-400">${visitor.contact || 'No contact info provided'}</p>
                 </div>
                 <div class="ml-auto text-right text-sm">
                     <p class="text-gray-500">Check-in: ${checkInDate.toLocaleDateString('en-US')}</p>
