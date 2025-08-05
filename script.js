@@ -1,3 +1,38 @@
+// This is the correct way to make the function globally accessible.
+// It must be defined outside of the DOMContentLoaded listener.
+window.showView = function(viewId) {
+    const appContainer = document.getElementById('app-container');
+    const allViews = document.querySelectorAll('#home-view, #check-in-view, #current-visitors-view, #check-out-view, #past-visitors-view');
+    const backButton = document.getElementById('back-to-home');
+
+    allViews.forEach(view => view.classList.add('hidden'));
+    const targetView = document.getElementById(viewId);
+    if (targetView) {
+        targetView.classList.remove('hidden');
+    }
+
+    if (viewId === 'home-view') {
+        backButton.classList.add('hidden');
+    } else {
+        backButton.classList.remove('hidden');
+    }
+
+    // Specific view logic
+    if (viewId === 'current-visitors-view') {
+        const currentVisitors = JSON.parse(localStorage.getItem('currentVisitors')) || [];
+        displayCurrentVisitors(currentVisitors);
+    }
+    if (viewId === 'past-visitors-view') {
+        const pastVisitors = JSON.parse(localStorage.getItem('pastVisitors')) || [];
+        displayPastVisitors(pastVisitors);
+    }
+    if (viewId === 'check-out-view') {
+        const currentVisitors = JSON.parse(localStorage.getItem('currentVisitors')) || [];
+        displayCheckoutList(currentVisitors);
+    }
+}
+
+
 document.addEventListener('DOMContentLoaded', () => {
     // --- Helper Functions and Initial Setup ---
     const appContainer = document.getElementById('app-container');
@@ -25,31 +60,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setInterval(updateTime, 1000);
     updateTime();
 
-    // Make the showView function globally accessible so it can be called from onclick in the HTML.
-    window.showView = function(viewId) {
-        allViews.forEach(view => view.classList.add('hidden'));
-        const targetView = document.getElementById(viewId);
-        if (targetView) {
-            targetView.classList.remove('hidden');
-        }
-
-        if (viewId === 'home-view') {
-            backButton.classList.add('hidden');
-        } else {
-            backButton.classList.remove('hidden');
-        }
-
-        // Specific view logic
-        if (viewId === 'current-visitors-view') {
-            displayCurrentVisitors(currentVisitors);
-        }
-        if (viewId === 'past-visitors-view') {
-            displayPastVisitors(pastVisitors);
-        }
-        if (viewId === 'check-out-view') {
-            displayCheckoutList(currentVisitors);
-        }
-    }
+    // The functions below are now called by showView, which is defined globally
     
     // --- Check-In Logic ---
     const checkInForm = document.getElementById('check-in-form');
@@ -121,6 +132,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     document.getElementById('refresh-current').addEventListener('click', () => {
+        const currentVisitors = JSON.parse(localStorage.getItem('currentVisitors')) || [];
         displayCurrentVisitors(currentVisitors);
     });
 
@@ -236,6 +248,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     document.getElementById('refresh-past').addEventListener('click', () => {
+        const pastVisitors = JSON.parse(localStorage.getItem('pastVisitors')) || [];
         displayPastVisitors(pastVisitors);
     });
 
