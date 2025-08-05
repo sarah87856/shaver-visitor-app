@@ -20,6 +20,7 @@ window.showView = function(viewId) {
     // Specific view logic
     if (viewId === 'current-visitors-view') {
         const currentVisitors = JSON.parse(localStorage.getItem('currentVisitors')) || [];
+        // This is the line that makes the list appear immediately
         displayCurrentVisitors(currentVisitors);
     }
     if (viewId === 'past-visitors-view') {
@@ -60,8 +61,6 @@ document.addEventListener('DOMContentLoaded', () => {
     setInterval(updateTime, 1000);
     updateTime();
 
-    // The functions below are now called by showView, which is defined globally
-    
     // --- Check-In Logic ---
     const checkInForm = document.getElementById('check-in-form');
     checkInForm.addEventListener('submit', (e) => {
@@ -101,7 +100,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const timeDiff = Math.round((new Date() - checkInDate) / 60000); // Difference in minutes
             
             const item = document.createElement('div');
-            item.className = 'bg-gray-100 p-4 rounded-lg flex items-center shadow';
+            item.className = 'bg-gray-100 p-4 rounded-lg flex items-center shadow border border-gray-400';
             item.innerHTML = `
                 <div class="h-10 w-10 flex items-center justify-center bg-gray-300 rounded-full mr-4 text-sm font-bold text-gray-700">
                     ${visitor.firstName[0].toUpperCase()}${visitor.lastName[0].toUpperCase()}
@@ -149,7 +148,7 @@ document.addEventListener('DOMContentLoaded', () => {
         visitors.forEach(visitor => {
             const checkInDate = new Date(visitor.checkInTime);
             const item = document.createElement('div');
-            item.className = 'bg-gray-100 p-4 rounded-lg flex items-center shadow cursor-pointer';
+            item.className = 'bg-gray-100 p-4 rounded-lg flex items-center shadow cursor-pointer border border-gray-400';
             item.innerHTML = `
                 <div class="h-10 w-10 flex items-center justify-center bg-gray-300 rounded-full mr-4 text-sm font-bold text-gray-700">
                     ${visitor.firstName[0].toUpperCase()}${visitor.lastName[0].toUpperCase()}
@@ -218,7 +217,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const checkInDate = new Date(visitor.checkInTime);
             const checkOutDate = new Date(visitor.checkOutTime);
             const item = document.createElement('div');
-            item.className = 'bg-gray-100 p-4 rounded-lg flex items-center shadow';
+            item.className = 'bg-gray-100 p-4 rounded-lg flex items-center shadow border border-gray-400';
             item.innerHTML = `
                 <div class="h-10 w-10 flex items-center justify-center bg-gray-300 rounded-full mr-4 text-sm font-bold text-gray-700">
                     ${visitor.firstName[0].toUpperCase()}${visitor.lastName[0].toUpperCase()}
