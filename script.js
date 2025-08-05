@@ -16,7 +16,7 @@ window.showView = function(viewId) {
         backButton.classList.remove('hidden');
     }
 
-    // This section ensures the visitor lists are always refreshed when you navigate to them.
+    // --- These sections auto-load the visitor lists and clear search bars ---
     if (viewId === 'current-visitors-view') {
         const currentVisitors = JSON.parse(localStorage.getItem('currentVisitors')) || [];
         displayCurrentVisitors(currentVisitors);
@@ -101,8 +101,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Show a confirmation message before returning to home view
         const checkInView = document.getElementById('check-in-view');
-        // Temporarily hide the form content
-        checkInForm.classList.add('hidden');
+        // --- FIX: Hide the entire container, not just the form ---
+        const checkInContainer = document.getElementById('check-in-container');
+        checkInContainer.classList.add('hidden');
         // Create and show a success message
         const successMessage = document.createElement('div');
         successMessage.className = "p-6 text-center";
@@ -118,7 +119,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         setTimeout(() => {
             // Restore the form and remove the success message
-            checkInForm.classList.remove('hidden');
+            checkInContainer.classList.remove('hidden');
             checkInView.removeChild(successMessage);
             showView('home-view');
         }, 3000);
