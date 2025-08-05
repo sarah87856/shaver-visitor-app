@@ -16,7 +16,6 @@ window.showView = function(viewId) {
         backButton.classList.remove('hidden');
     }
 
-    // --- FIX FOR AUTO-LOADING ---
     // This section ensures the visitor lists are always refreshed when you navigate to them.
     if (viewId === 'current-visitors-view') {
         const currentVisitors = JSON.parse(localStorage.getItem('currentVisitors')) || [];
