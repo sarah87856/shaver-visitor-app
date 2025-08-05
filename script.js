@@ -16,8 +16,8 @@ window.showView = function(viewId) {
         backButton.classList.remove('hidden');
     }
 
-    // This section is now the reliable entry point for displaying data.
-    // We will always re-fetch from localStorage to ensure it's up-to-date.
+    // --- FIX FOR AUTO-LOADING ---
+    // This section ensures the visitor lists are always refreshed when you navigate to them.
     if (viewId === 'current-visitors-view') {
         const currentVisitors = JSON.parse(localStorage.getItem('currentVisitors')) || [];
         displayCurrentVisitors(currentVisitors);
@@ -260,4 +260,77 @@ document.addEventListener('DOMContentLoaded', () => {
     searchCheckoutInput.addEventListener('input', (e) => {
         const searchTerm = e.target.value.toLowerCase();
         const currentVisitors = JSON.parse(localStorage.getItem('currentVisitors')) || [];
-        const filteredVisitors = currentVisitors.filter
+        const filteredVisitors = currentVisitors.filter(visitor => 
+            visitor.firstName.toLowerCase().includes(searchTerm) || 
+            visitor.lastName.toLowerCase().includes(searchTerm)
+        );
+        displayCheckoutList(filteredVisitors);
+    });
+
+    // --- Past Visitors Logic ---
+    function displayPastVisitors(visitors) {
+        const list = document.getElementById('past-visitors-list');
+        list.innerHTML = '';
+        document.getElementById('past-visitors-count').textContent = `${visitors.length} Past Visitors`;
+
+        if (visitors.length === 0) {
+            list.innerHTML = `<div id="no-past-visitors" class="text-center text-gray-400 p-8">
+                <svg class="mx-auto h-12 w-12 text-gray-300" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l3 3a1 1 0 001.414-1.414L11 9.586V6z" clip-rule="evenodd"></path></svg>
+                <p class="mt-2 text-sm">No past visitors yet</p>
+                <p class="text-xs">Past check-outs will appear here</p>
+            </div>`;
+            return;
+        }
+
+        visitors.sort((a, b) => new Date(b.checkOutTime) - new Date(a.checkOutTime));
+
+        visitors.forEach(visitor => {
+            const checkInDate = new Date(visitor.checkInTime);
+            const checkOutDate = new Date(visitor.checkOutTime);
+            
+            // Define options for combined date and time
+            const datetimeOptions = {
+                year: 'numeric', month: 'short', day: 'numeric',
+                hour: 'numeric', minute: 'numeric', hour12: true
+            };
+
+            const item = document.createElement('div');
+            item.className = 'bg-gray-100 p-4 rounded-lg flex items-center shadow border border-gray-400';
+            item.innerHTML = `
+                <div class="h-10 w-10 flex items-center justify-center bg-gray-300 rounded-full mr-4 text-sm font-bold text-gray-700">
+                    ${visitor.firstName[0].toUpperCase()}${visitor.lastName[0].toUpperCase()}
+                </div>
+                <div>
+                    <h3 class="font-bold">${visitor.firstName} ${visitor.lastName}</h3>
+                    <p class="text-sm text-gray-500">${visitor.purpose} ${visitor.companyName ? `with ${visitor.companyName}` : ''}</p>
+                    <p class="text-xs text-gray-400">${visitor.contact || 'No contact info provided'}</p>
+                </div>
+                <div class="ml-auto text-right text-sm">
+                    <p class="text-gray-500">Check-in: ${checkInDate.toLocaleString('en-US', datetimeOptions)}</p>
+                    <p class="text-gray-500">Checked out: ${checkOutDate.toLocaleString('en-US', datetimeOptions)}</p>
+                </div>
+            `;
+            list.appendChild(item);
+        });
+    }
+
+    const searchPastInput = document.getElementById('search-past');
+    searchPastInput.addEventListener('input', (e) => {
+        const searchTerm = e.target.value.toLowerCase();
+        const pastVisitors = JSON.parse(localStorage.getItem('pastVisitors')) || [];
+        const filteredVisitors = pastVisitors.filter(visitor => 
+            visitor.firstName.toLowerCase().includes(searchTerm) || 
+            visitor.lastName.toLowerCase().includes(searchTerm) ||
+            (visitor.companyName && visitor.companyName.toLowerCase().includes(searchTerm))
+        );
+        displayPastVisitors(filteredVisitors);
+    });
+
+    document.getElementById('refresh-past').addEventListener('click', () => {
+        const pastVisitors = JSON.parse(localStorage.getItem('pastVisitors')) || [];
+        displayPastVisitors(pastVisitors);
+    });
+
+    // Initial view
+    showView('home-view');
+});
