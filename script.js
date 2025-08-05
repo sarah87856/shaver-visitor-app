@@ -18,25 +18,31 @@ document.addEventListener('DOMContentLoaded', () => {
         const currentTimeElement = document.getElementById('current-time');
         const currentDateElement = document.getElementById('current-date');
 
-        if (currentTimeElement) currentTimeElement.textContent = `Current Time\n${dateString} at ${timeString}`;
+        if (currentTimeElement) currentTimeElement.textContent = timeString;
         if (currentDateElement) currentDateElement.textContent = `${dateString} at ${timeString}`;
     }
 
     setInterval(updateTime, 1000);
     updateTime();
 
-    function showView(viewId) {
+    // This is the corrected function that will show the requested view and hide all others.
+    window.showView = function(viewId) {
         allViews.forEach(view => view.classList.add('hidden'));
-        document.getElementById(viewId).classList.remove('hidden');
+        const targetView = document.getElementById(viewId);
+        if (targetView) {
+            targetView.classList.remove('hidden');
+        }
 
         if (viewId === 'home-view') {
             backButton.classList.add('hidden');
-            appContainer.classList.remove('bg-white');
-            appContainer.classList.add('bg-gray-800');
+            // Re-apply the light gray background for the main container on home view
+            appContainer.classList.remove('bg-gray-800');
+            appContainer.classList.add('bg-white');
         } else {
             backButton.classList.remove('hidden');
-            appContainer.classList.add('bg-white');
+            // Change the background color for other views
             appContainer.classList.remove('bg-gray-800');
+            appContainer.classList.add('bg-white');
         }
 
         // Specific view logic
@@ -50,7 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
             displayCheckoutList(currentVisitors);
         }
     }
-
+    
     // --- Check-In Logic ---
     const checkInForm = document.getElementById('check-in-form');
     checkInForm.addEventListener('submit', (e) => {
@@ -99,146 +105,4 @@ document.addEventListener('DOMContentLoaded', () => {
                     <h3 class="font-bold">${visitor.firstName} ${visitor.lastName}</h3>
                     <p class="text-sm text-gray-500">${visitor.purpose} ${visitor.companyName ? `at ${visitor.companyName}` : ''}</p>
                 </div>
-                <div class="ml-auto text-right text-sm">
-                    <p class="text-gray-500">Checked in at</p>
-                    <p class="text-red-600 font-bold">${checkInDate.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })}</p>
-                    <p class="text-xs text-gray-400">${timeDiff}m ago</p>
-                </div>
-            `;
-            list.appendChild(item);
-        });
-    }
-
-    const searchCurrentInput = document.getElementById('search-current');
-    searchCurrentInput.addEventListener('input', (e) => {
-        const searchTerm = e.target.value.toLowerCase();
-        const filteredVisitors = currentVisitors.filter(visitor => 
-            visitor.firstName.toLowerCase().includes(searchTerm) || 
-            visitor.lastName.toLowerCase().includes(searchTerm) ||
-            (visitor.companyName && visitor.companyName.toLowerCase().includes(searchTerm))
-        );
-        displayCurrentVisitors(filteredVisitors);
-    });
-
-    document.getElementById('refresh-current').addEventListener('click', () => {
-        displayCurrentVisitors(currentVisitors);
-    });
-
-    // --- Check-Out Logic ---
-    function displayCheckoutList(visitors) {
-        const list = document.getElementById('checkout-list');
-        list.innerHTML = '';
-        
-        if (visitors.length === 0) {
-             list.innerHTML = '<div class="text-center text-gray-400 p-8"><p class="mt-2 text-sm">No visitors to check out.</p></div>';
-            return;
-        }
-
-        visitors.forEach(visitor => {
-            const checkInDate = new Date(visitor.checkInTime);
-            const item = document.createElement('div');
-            item.className = 'bg-gray-100 p-4 rounded-lg flex items-center shadow cursor-pointer';
-            item.innerHTML = `
-                <div class="h-10 w-10 flex items-center justify-center bg-gray-300 rounded-full mr-4 text-sm font-bold text-gray-700">
-                    ${visitor.firstName[0].toUpperCase()}${visitor.lastName[0].toUpperCase()}
-                </div>
-                <div>
-                    <h3 class="font-bold">${visitor.firstName} ${visitor.lastName}</h3>
-                    <p class="text-sm text-gray-500">${visitor.purpose} ${visitor.companyName ? `at ${visitor.companyName}` : ''}</p>
-                </div>
-                <div class="ml-auto text-right text-sm">
-                    <p class="text-gray-500">Checked in at</p>
-                    <p class="text-red-600 font-bold">${checkInDate.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })}</p>
-                </div>
-            `;
-            item.onclick = () => checkOutVisitor(visitor.id);
-            list.appendChild(item);
-        });
-    }
-
-    function checkOutVisitor(visitorId) {
-        const visitorIndex = currentVisitors.findIndex(v => v.id === visitorId);
-        if (visitorIndex !== -1) {
-            const visitor = currentVisitors[visitorIndex];
-            visitor.checkOutTime = new Date().toISOString(); // Add check-out time
-            
-            // Move visitor from current to past
-            currentVisitors.splice(visitorIndex, 1);
-            pastVisitors.push(visitor);
-
-            // Update localStorage
-            localStorage.setItem('currentVisitors', JSON.stringify(currentVisitors));
-            localStorage.setItem('pastVisitors', JSON.stringify(pastVisitors));
-
-            // Refresh the view
-            displayCheckoutList(currentVisitors);
-        }
-    }
-
-    const searchCheckoutInput = document.getElementById('search-checkout');
-    searchCheckoutInput.addEventListener('input', (e) => {
-        const searchTerm = e.target.value.toLowerCase();
-        const filteredVisitors = currentVisitors.filter(visitor => 
-            visitor.firstName.toLowerCase().includes(searchTerm) || 
-            visitor.lastName.toLowerCase().includes(searchTerm)
-        );
-        displayCheckoutList(filteredVisitors);
-    });
-
-    // --- Past Visitors Logic ---
-    function displayPastVisitors(visitors) {
-        const list = document.getElementById('past-visitors-list');
-        list.innerHTML = '';
-        document.getElementById('past-visitors-count').textContent = `${visitors.length} Past Visitors`;
-
-        if (visitors.length === 0) {
-            list.innerHTML = `<div id="no-past-visitors" class="text-center text-gray-400 p-8">
-                <svg class="mx-auto h-12 w-12 text-gray-300" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l3 3a1 1 0 001.414-1.414L11 9.586V6z" clip-rule="evenodd"></path></svg>
-                <p class="mt-2 text-sm">No past visitors yet</p>
-                <p class="text-xs">Past check-outs will appear here</p>
-            </div>`;
-            return;
-        }
-
-        visitors.sort((a, b) => new Date(b.checkOutTime) - new Date(a.checkOutTime));
-
-        visitors.forEach(visitor => {
-            const checkInDate = new Date(visitor.checkInTime);
-            const checkOutDate = new Date(visitor.checkOutTime);
-            const item = document.createElement('div');
-            item.className = 'bg-gray-100 p-4 rounded-lg flex items-center shadow';
-            item.innerHTML = `
-                <div class="h-10 w-10 flex items-center justify-center bg-gray-300 rounded-full mr-4 text-sm font-bold text-gray-700">
-                    ${visitor.firstName[0].toUpperCase()}${visitor.lastName[0].toUpperCase()}
-                </div>
-                <div>
-                    <h3 class="font-bold">${visitor.firstName} ${visitor.lastName}</h3>
-                    <p class="text-sm text-gray-500">${visitor.purpose} ${visitor.companyName ? `at ${visitor.companyName}` : ''}</p>
-                </div>
-                <div class="ml-auto text-right text-sm">
-                    <p class="text-gray-500">Check-in: ${checkInDate.toLocaleDateString('en-US')}</p>
-                    <p class="text-gray-500">Checked out: ${checkOutDate.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })}</p>
-                </div>
-            `;
-            list.appendChild(item);
-        });
-    }
-
-    const searchPastInput = document.getElementById('search-past');
-    searchPastInput.addEventListener('input', (e) => {
-        const searchTerm = e.target.value.toLowerCase();
-        const filteredVisitors = pastVisitors.filter(visitor => 
-            visitor.firstName.toLowerCase().includes(searchTerm) || 
-            visitor.lastName.toLowerCase().includes(searchTerm) ||
-            (visitor.companyName && visitor.companyName.toLowerCase().includes(searchTerm))
-        );
-        displayPastVisitors(filteredVisitors);
-    });
-
-    document.getElementById('refresh-past').addEventListener('click', () => {
-        displayPastVisitors(pastVisitors);
-    });
-
-    // Initial view
-    showView('home-view');
-});
+                <div class="ml-auto text-right text-
