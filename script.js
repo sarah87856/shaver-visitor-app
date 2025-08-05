@@ -18,9 +18,9 @@ window.showView = function(viewId) {
     }
 
     // Specific view logic
+    // Now also handles automatic refreshing
     if (viewId === 'current-visitors-view') {
         const currentVisitors = JSON.parse(localStorage.getItem('currentVisitors')) || [];
-        // This is the line that makes the list appear immediately
         displayCurrentVisitors(currentVisitors);
     }
     if (viewId === 'past-visitors-view') {
@@ -79,178 +79,32 @@ document.addEventListener('DOMContentLoaded', () => {
         currentVisitors.push(newVisitor);
         localStorage.setItem('currentVisitors', JSON.stringify(currentVisitors));
 
-        // Clear form and go back to home view
+        // Clear form
         checkInForm.reset();
-        showView('home-view');
-    });
 
-    // --- Current Visitors Logic ---
-    function displayCurrentVisitors(visitors) {
-        const list = document.getElementById('current-visitors-list');
-        list.innerHTML = '';
-        document.getElementById('current-visitors-count').textContent = `${visitors.length} visitors currently checked in`;
-
-        if (visitors.length === 0) {
-            list.innerHTML = '<div class="text-center text-gray-400 p-8"><svg class="mx-auto h-12 w-12 text-gray-300" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l3 3a1 1 0 001.414-1.414L11 9.586V6z" clip-rule="evenodd"></path></svg><p class="mt-2 text-sm">No current visitors yet</p></div>';
-            return;
-        }
-
-        visitors.forEach(visitor => {
-            const checkInDate = new Date(visitor.checkInTime);
-            const timeDiff = Math.round((new Date() - checkInDate) / 60000); // Difference in minutes
-            
-            const item = document.createElement('div');
-            item.className = 'bg-gray-100 p-4 rounded-lg flex items-center shadow border border-gray-400';
-            item.innerHTML = `
-                <div class="h-10 w-10 flex items-center justify-center bg-gray-300 rounded-full mr-4 text-sm font-bold text-gray-700">
-                    ${visitor.firstName[0].toUpperCase()}${visitor.lastName[0].toUpperCase()}
-                </div>
-                <div>
-                    <h3 class="font-bold">${visitor.firstName} ${visitor.lastName}</h3>
-                    <p class="text-sm text-gray-500">${visitor.purpose} ${visitor.companyName ? `at ${visitor.companyName}` : ''}</p>
-                </div>
-                <div class="ml-auto text-right text-sm">
-                    <p class="text-gray-500">Checked in at</p>
-                    <p class="text-red-600 font-bold">${checkInDate.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })}</p>
-                    <p class="text-xs text-gray-400">${timeDiff}m ago</p>
-                </div>
-            `;
-            list.appendChild(item);
-        });
-    }
-
-    const searchCurrentInput = document.getElementById('search-current');
-    searchCurrentInput.addEventListener('input', (e) => {
-        const searchTerm = e.target.value.toLowerCase();
-        const filteredVisitors = currentVisitors.filter(visitor => 
-            visitor.firstName.toLowerCase().includes(searchTerm) || 
-            visitor.lastName.toLowerCase().includes(searchTerm) ||
-            (visitor.companyName && visitor.companyName.toLowerCase().includes(searchTerm))
-        );
-        displayCurrentVisitors(filteredVisitors);
-    });
-
-    document.getElementById('refresh-current').addEventListener('click', () => {
-        const currentVisitors = JSON.parse(localStorage.getItem('currentVisitors')) || [];
-        displayCurrentVisitors(currentVisitors);
-    });
-
-    // --- Check-Out Logic ---
-    function displayCheckoutList(visitors) {
-        const list = document.getElementById('checkout-list');
-        list.innerHTML = '';
-        
-        if (visitors.length === 0) {
-             list.innerHTML = '<div class="text-center text-gray-400 p-8"><p class="mt-2 text-sm">No visitors to check out.</p></div>';
-            return;
-        }
-
-        visitors.forEach(visitor => {
-            const checkInDate = new Date(visitor.checkInTime);
-            const item = document.createElement('div');
-            item.className = 'bg-gray-100 p-4 rounded-lg flex items-center shadow cursor-pointer border border-gray-400';
-            item.innerHTML = `
-                <div class="h-10 w-10 flex items-center justify-center bg-gray-300 rounded-full mr-4 text-sm font-bold text-gray-700">
-                    ${visitor.firstName[0].toUpperCase()}${visitor.lastName[0].toUpperCase()}
-                </div>
-                <div>
-                    <h3 class="font-bold">${visitor.firstName} ${visitor.lastName}</h3>
-                    <p class="text-sm text-gray-500">${visitor.purpose} ${visitor.companyName ? `at ${visitor.companyName}` : ''}</p>
-                </div>
-                <div class="ml-auto text-right text-sm">
-                    <p class="text-gray-500">Checked in at</p>
-                    <p class="text-red-600 font-bold">${checkInDate.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })}</p>
-                </div>
-            `;
-            item.onclick = () => checkOutVisitor(visitor.id);
-            list.appendChild(item);
-        });
-    }
-
-    function checkOutVisitor(visitorId) {
-        const visitorIndex = currentVisitors.findIndex(v => v.id === visitorId);
-        if (visitorIndex !== -1) {
-            const visitor = currentVisitors[visitorIndex];
-            visitor.checkOutTime = new Date().toISOString(); // Add check-out time
-            
-            // Move visitor from current to past
-            currentVisitors.splice(visitorIndex, 1);
-            pastVisitors.push(visitor);
-
-            // Update localStorage
-            localStorage.setItem('currentVisitors', JSON.stringify(currentVisitors));
-            localStorage.setItem('pastVisitors', JSON.stringify(pastVisitors));
-
-            // Refresh the view
-            displayCheckoutList(currentVisitors);
-        }
-    }
-
-    const searchCheckoutInput = document.getElementById('search-checkout');
-    searchCheckoutInput.addEventListener('input', (e) => {
-        const searchTerm = e.target.value.toLowerCase();
-        const filteredVisitors = currentVisitors.filter(visitor => 
-            visitor.firstName.toLowerCase().includes(searchTerm) || 
-            visitor.lastName.toLowerCase().includes(searchTerm)
-        );
-        displayCheckoutList(filteredVisitors);
-    });
-
-    // --- Past Visitors Logic ---
-    function displayPastVisitors(visitors) {
-        const list = document.getElementById('past-visitors-list');
-        list.innerHTML = '';
-        document.getElementById('past-visitors-count').textContent = `${visitors.length} Past Visitors`;
-
-        if (visitors.length === 0) {
-            list.innerHTML = `<div id="no-past-visitors" class="text-center text-gray-400 p-8">
-                <svg class="mx-auto h-12 w-12 text-gray-300" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l3 3a1 1 0 001.414-1.414L11 9.586V6z" clip-rule="evenodd"></path></svg>
-                <p class="mt-2 text-sm">No past visitors yet</p>
-                <p class="text-xs">Past check-outs will appear here</p>
-            </div>`;
-            return;
-        }
-
-        visitors.sort((a, b) => new Date(b.checkOutTime) - new Date(a.checkOutTime));
-
-        visitors.forEach(visitor => {
-            const checkInDate = new Date(visitor.checkInTime);
-            const checkOutDate = new Date(visitor.checkOutTime);
-            const item = document.createElement('div');
-            item.className = 'bg-gray-100 p-4 rounded-lg flex items-center shadow border border-gray-400';
-            item.innerHTML = `
-                <div class="h-10 w-10 flex items-center justify-center bg-gray-300 rounded-full mr-4 text-sm font-bold text-gray-700">
-                    ${visitor.firstName[0].toUpperCase()}${visitor.lastName[0].toUpperCase()}
-                </div>
-                <div>
-                    <h3 class="font-bold">${visitor.firstName} ${visitor.lastName}</h3>
-                    <p class="text-sm text-gray-500">${visitor.purpose} ${visitor.companyName ? `at ${visitor.companyName}` : ''}</p>
-                </div>
-                <div class="ml-auto text-right text-sm">
-                    <p class="text-gray-500">Check-in: ${checkInDate.toLocaleDateString('en-US')}</p>
-                    <p class="text-gray-500">Checked out: ${checkOutDate.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })}</p>
-                </div>
-            `;
-            list.appendChild(item);
-        });
-    }
-
-    const searchPastInput = document.getElementById('search-past');
-    searchPastInput.addEventListener('input', (e) => {
-        const searchTerm = e.target.value.toLowerCase();
-        const filteredVisitors = pastVisitors.filter(visitor => 
-            visitor.firstName.toLowerCase().includes(searchTerm) || 
-            visitor.lastName.toLowerCase().includes(searchTerm) ||
-            (visitor.companyName && visitor.companyName.toLowerCase().includes(searchTerm))
-        );
-        displayPastVisitors(filteredVisitors);
-    });
-
-    document.getElementById('refresh-past').addEventListener('click', () => {
-        const pastVisitors = JSON.parse(localStorage.getItem('pastVisitors')) || [];
-        displayPastVisitors(pastVisitors);
-    });
-
-    // Initial view
-    showView('home-view');
-});
+        // Show a confirmation message before returning to home view
+        const checkInView = document.getElementById('check-in-view');
+        checkInView.innerHTML = `
+            <div class="p-6 text-center">
+                <svg class="mx-auto h-16 w-16 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                <h2 class="mt-4 text-2xl font-bold">You are now checked in!</h2>
+                <p class="mt-2 text-gray-600">Welcome to Shaver Industries.</p>
+                <p class="mt-4 text-sm text-gray-500">Returning to home screen in 3 seconds...</p>
+            </div>
+        `;
+        setTimeout(() => {
+            // Restore the original form and go back to home
+            checkInView.innerHTML = `
+                <div class="bg-white p-6 rounded-lg shadow-md text-gray-800">
+                    <h2 class="text-2xl font-bold mb-2">Visitor Check-In</h2>
+                    <p class="text-sm text-gray-500 mb-6">Please fill out your information to sign in</p>
+                    <form id="check-in-form" class="space-y-4">
+                        <div>
+                            <label for="firstName" class="block text-sm font-medium text-gray-700">First Name *</label>
+                            <input type="text" id="firstName" name="firstName" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500 sm:text-sm p-2 border border-gray-400">
+                        </div>
+                        <div>
+                            <label for="lastName" class="block text-sm font-medium text-gray-700">Last Name *</label>
+                            <input type="text" id="lastName" name="lastName" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500 sm
