@@ -282,4 +282,33 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div>
                     <h3 class="font-bold">${visitor.firstName} ${visitor.lastName}</h3>
                     <p class="text-sm text-gray-500">${visitor.purpose} ${visitor.companyName ? `with ${visitor.companyName}` : ''}</p>
-                    <p class="text-xs text-gray
+                    <p class="text-xs text-gray-400">${visitor.contact || 'No contact info provided'}</p>
+                </div>
+                <div class="ml-auto text-right text-sm">
+                    <p class="text-gray-500">Check-in: ${checkInDate.toLocaleString('en-US', datetimeOptions)}</p>
+                    <p class="text-gray-500">Checked out: ${checkOutDate.toLocaleString('en-US', datetimeOptions)}</p>
+                </div>
+            `;
+            list.appendChild(item);
+        });
+    }
+
+    const searchPastInput = document.getElementById('search-past');
+    searchPastInput.addEventListener('input', (e) => {
+        const searchTerm = e.target.value.toLowerCase();
+        const pastVisitors = JSON.parse(localStorage.getItem('pastVisitors')) || [];
+        const filteredVisitors = pastVisitors.filter(visitor => 
+            visitor.firstName.toLowerCase().includes(searchTerm) || 
+            visitor.lastName.toLowerCase().includes(searchTerm) ||
+            (visitor.companyName && visitor.companyName.toLowerCase().includes(searchTerm))
+        );
+        displayPastVisitors(filteredVisitors);
+    });
+
+    document.getElementById('refresh-past').addEventListener('click', () => {
+        const pastVisitors = JSON.parse(localStorage.getItem('pastVisitors')) || [];
+        displayPastVisitors(pastVisitors);
+    });
+
+    showView('home-view');
+});
