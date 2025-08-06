@@ -1,7 +1,7 @@
 /* Custom Styles */
 /* Sets the main container to take up the full viewport height on mobile */
 #app-container {
-    height: 95%;
+    height: 80%;
     width: 95%;
 }
 
