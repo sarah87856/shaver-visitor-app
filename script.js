@@ -1,3 +1,5 @@
+// Version 1.3 - Fixed data persistence bug
+
 window.showView = function(viewId) {
     const allViews = document.querySelectorAll('#home-view, #check-in-view, #current-visitors-view, #check-out-view, #past-visitors-view');
     const backButton = document.getElementById('back-to-home');
