@@ -29,19 +29,15 @@ window.showView = function(viewId) {
         displayCheckoutList(currentVisitors);
         document.getElementById('search-checkout').value = '';
     }
-}
-
+};
 
 document.addEventListener('DOMContentLoaded', () => {
+    // These lines attach the click functionality to your buttons.
     document.getElementById('check-in-button').addEventListener('click', () => showView('check-in-view'));
     document.getElementById('current-visitors-button').addEventListener('click', () => showView('current-visitors-view'));
     document.getElementById('check-out-button').addEventListener('click', () => showView('check-out-view'));
     document.getElementById('past-visitors-button').addEventListener('click', () => showView('past-visitors-view'));
     document.getElementById('back-to-home').addEventListener('click', () => showView('home-view'));
-
-    const appContainer = document.getElementById('app-container');
-    const allViews = document.querySelectorAll('#home-view, #check-in-view, #current-visitors-view, #check-out-view, #past-visitors-view');
-    const backButton = document.getElementById('back-to-home');
 
     let currentVisitors = JSON.parse(localStorage.getItem('currentVisitors')) || [];
     let pastVisitors = JSON.parse(localStorage.getItem('pastVisitors')) || [];
