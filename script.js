@@ -209,18 +209,22 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('back-to-home').addEventListener('click', () => showView('home-view'));
 
     function updateTime() {
-        const now = new Date();
-        const optionsDate = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-        const optionsTime = { hour: 'numeric', minute: 'numeric', hour12: true };
-        const dateString = now.toLocaleDateString('en-US', optionsDate);
-        const timeString = now.toLocaleTimeString('en-US', optionsTime);
+    const now = new Date();
+    const optionsDate = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    const optionsTime = { hour: 'numeric', minute: 'numeric', hour12: true };
+    const dateString = now.toLocaleDateString('en-US', optionsDate);
+    const timeString = now.toLocaleTimeString('en-US', optionsTime);
 
-        const currentTimeElement = document.getElementById('current-time');
-        const currentDateElement = document.getElementById('current-date');
+    const currentTimeElement = document.getElementById('current-time');
+    const currentDateElement = document.getElementById('current-date');
 
-        if (currentTimeElement) currentTimeElement.textContent = timeString;
-        if (currentDateElement) currentDateElement.textContent = `${dateString} at ${timeString}`;
+    if (currentTimeElement) {
+        currentTimeElement.textContent = timeString;
     }
+    if (currentDateElement) {
+        currentDateElement.textContent = dateString;
+    }
+}
 
     setInterval(updateTime, 1000);
     updateTime();
