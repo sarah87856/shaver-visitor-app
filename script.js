@@ -45,6 +45,11 @@ function displayCurrentVisitors(visitors) {
         const checkInDate = new Date(visitor.checkInTime);
         const timeDiff = Math.round((new Date() - checkInDate) / 60000);
         
+        const contactInfoHTML = `
+            ${visitor.phoneNumber ? `<p class="text-xs text-gray-400">Phone: ${visitor.phoneNumber}</p>` : ''}
+            ${visitor.emailAddress ? `<p class="text-xs text-gray-400">Email: ${visitor.emailAddress}</p>` : ''}
+        `;
+
         const item = document.createElement('div');
         item.className = 'bg-gray-100 p-4 rounded-lg flex items-center shadow border border-gray-400';
         item.innerHTML = `
@@ -54,7 +59,7 @@ function displayCurrentVisitors(visitors) {
             <div>
                 <h3 class="font-bold">${visitor.firstName} ${visitor.lastName}</h3>
                 <p class="text-sm text-gray-500">${visitor.purpose} ${visitor.companyName ? `with ${visitor.companyName}` : ''}</p>
-                <p class="text-xs text-gray-400">${visitor.contact || 'No contact info provided'}</p>
+                ${contactInfoHTML}
             </div>
             <div class="ml-auto text-right text-sm">
                 <p class="text-gray-500">Checked in at</p>
@@ -77,6 +82,12 @@ function displayCheckoutList(visitors) {
 
     visitors.forEach(visitor => {
         const checkInDate = new Date(visitor.checkInTime);
+
+        const contactInfoHTML = `
+            ${visitor.phoneNumber ? `<p class="text-xs text-gray-400">Phone: ${visitor.phoneNumber}</p>` : ''}
+            ${visitor.emailAddress ? `<p class="text-xs text-gray-400">Email: ${visitor.emailAddress}</p>` : ''}
+        `;
+
         const item = document.createElement('div');
         item.className = 'bg-gray-100 p-4 rounded-lg flex items-center shadow cursor-pointer border border-gray-400';
         item.innerHTML = `
@@ -86,7 +97,7 @@ function displayCheckoutList(visitors) {
             <div>
                 <h3 class="font-bold">${visitor.firstName} ${visitor.lastName}</h3>
                 <p class="text-sm text-gray-500">${visitor.purpose} ${visitor.companyName ? `with ${visitor.companyName}` : ''}</p>
-                <p class="text-xs text-gray-400">${visitor.contact || 'No contact info provided'}</p>
+                ${contactInfoHTML}
             </div>
             <div class="ml-auto text-right text-sm">
                 <p class="text-gray-500">Checked in at</p>
@@ -123,6 +134,11 @@ function displayPastVisitors(visitors) {
             hour: 'numeric', minute: 'numeric', hour12: true
         };
 
+        const contactInfoHTML = `
+            ${visitor.phoneNumber ? `<p class="text-xs text-gray-400">Phone: ${visitor.phoneNumber}</p>` : ''}
+            ${visitor.emailAddress ? `<p class="text-xs text-gray-400">Email: ${visitor.emailAddress}</p>` : ''}
+        `;
+
         const item = document.createElement('div');
         item.className = 'bg-gray-100 p-4 rounded-lg flex items-center shadow border border-gray-400';
         item.innerHTML = `
@@ -132,11 +148,11 @@ function displayPastVisitors(visitors) {
             <div>
                 <h3 class="font-bold">${visitor.firstName} ${visitor.lastName}</h3>
                 <p class="text-sm text-gray-500">${visitor.purpose} ${visitor.companyName ? `with ${visitor.companyName}` : ''}</p>
-                <p class="text-xs text-gray-400">${visitor.contact || 'No contact info provided'}</p>
+                ${contactInfoHTML}
             </div>
             <div class="ml-auto text-right text-sm">
-                <p class="text-gray-500">Check-in: ${checkInDate.toLocaleString('en-US', datetimeOptions)}</p>
-                <p class="text-gray-500">Checked out: ${checkOutDate.toLocaleString('en-US', datetimeOptions)}</p>
+                <p class="text-gray-500">In: ${checkInDate.toLocaleString('en-US', datetimeOptions)}</p>
+                <p class="text-gray-500">Out: ${checkOutDate.toLocaleString('en-US', datetimeOptions)}</p>
             </div>
         `;
         list.appendChild(item);
@@ -229,7 +245,8 @@ document.addEventListener('DOMContentLoaded', () => {
             lastName: document.getElementById('lastName').value,
             companyName: document.getElementById('companyName').value,
             purpose: document.getElementById('purpose').value,
-            contact: phoneNumber || emailAddress,
+            phoneNumber: phoneNumber,
+            emailAddress: emailAddress,
             checkInTime: new Date().toISOString(),
         };
 
