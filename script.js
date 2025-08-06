@@ -135,8 +135,8 @@ function displayPastVisitors(visitors) {
         };
 
         const contactInfoHTML = `
-            ${visitor.phoneNumber ? `<p class="text-xs text-gray-400">Phone: ${visitor.phoneNumber}</p>` : ''}
-            ${visitor.emailAddress ? `<p class="text-xs text-gray-400">Email: ${visitor.emailAddress}</p>` : ''}
+            ${visitor.phoneNumber ? `<p class="text-xs text-gray-400">${visitor.phoneNumber}</p>` : ''}
+            ${visitor.emailAddress ? `<p class="text-xs text-gray-400">${visitor.emailAddress}</p>` : ''}
         `;
 
         const item = document.createElement('div');
@@ -266,61 +266,4 @@ document.addEventListener('DOMContentLoaded', () => {
             </svg>
             <h2 class="mt-4 text-2xl font-bold">You are now checked in!</h2>
             <p class="mt-2 text-gray-600">Welcome to Shaver Industries.</p>
-            <p class="mt-4 text-sm text-gray-500">Returning to home screen in 3 seconds...</p>
-        `;
-        checkInView.appendChild(successMessage);
-        
-        setTimeout(() => {
-            checkInContainer.classList.remove('hidden');
-            checkInView.removeChild(successMessage);
-            showView('home-view');
-        }, 3000);
-    });
-
-    const searchCurrentInput = document.getElementById('search-current');
-    searchCurrentInput.addEventListener('input', (e) => {
-        const searchTerm = e.target.value.toLowerCase();
-        const currentVisitors = JSON.parse(localStorage.getItem('currentVisitors')) || [];
-        const filteredVisitors = currentVisitors.filter(visitor => 
-            visitor.firstName.toLowerCase().includes(searchTerm) || 
-            visitor.lastName.toLowerCase().includes(searchTerm) ||
-            (visitor.companyName && visitor.companyName.toLowerCase().includes(searchTerm))
-        );
-        displayCurrentVisitors(filteredVisitors);
-    });
-
-    document.getElementById('refresh-current').addEventListener('click', () => {
-        const currentVisitors = JSON.parse(localStorage.getItem('currentVisitors')) || [];
-        displayCurrentVisitors(currentVisitors);
-    });
-
-    const searchCheckoutInput = document.getElementById('search-checkout');
-    searchCheckoutInput.addEventListener('input', (e) => {
-        const searchTerm = e.target.value.toLowerCase();
-        const currentVisitors = JSON.parse(localStorage.getItem('currentVisitors')) || [];
-        const filteredVisitors = currentVisitors.filter(visitor => 
-            visitor.firstName.toLowerCase().includes(searchTerm) || 
-            visitor.lastName.toLowerCase().includes(searchTerm)
-        );
-        displayCheckoutList(filteredVisitors);
-    });
-
-    const searchPastInput = document.getElementById('search-past');
-    searchPastInput.addEventListener('input', (e) => {
-        const searchTerm = e.target.value.toLowerCase();
-        const pastVisitors = JSON.parse(localStorage.getItem('pastVisitors')) || [];
-        const filteredVisitors = pastVisitors.filter(visitor => 
-            visitor.firstName.toLowerCase().includes(searchTerm) || 
-            visitor.lastName.toLowerCase().includes(searchTerm) ||
-            (visitor.companyName && visitor.companyName.toLowerCase().includes(searchTerm))
-        );
-        displayPastVisitors(filteredVisitors);
-    });
-
-    document.getElementById('refresh-past').addEventListener('click', () => {
-        const pastVisitors = JSON.parse(localStorage.getItem('pastVisitors')) || [];
-        displayPastVisitors(pastVisitors);
-    });
-
-    showView('home-view');
-});
+            <p class="mt-4 text
