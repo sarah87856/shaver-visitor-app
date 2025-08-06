@@ -9,5 +9,6 @@
 @media (min-width: 768px) {
     #app-container {
         height: 90vh;
+        width: 100%;
     }
 }
