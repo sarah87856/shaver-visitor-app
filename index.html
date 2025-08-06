@@ -66,4 +66,80 @@
                     </div>
                     <div>
                         <label for="purpose" class="block text-sm font-medium text-gray-700">Purpose of Visit *</label>
-                        <select
+                        <select id="purpose" name="purpose" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500 sm:text-sm p-2 border border-gray-400">
+                            <option value="">Select purpose...</option>
+                            <option value="Interview">Interview</option>
+                            <option value="Meeting">Meeting</option>
+                            <option value="Delivery">Delivery</option>
+                            <option value="Maintenance">Maintenance</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div>
+                        <p class="block text-sm font-medium text-gray-700">Contact Information</p>
+                        <input type="tel" id="phoneNumber" name="phoneNumber" placeholder="Phone number" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500 sm:text-sm p-2 border border-gray-400">
+                        <input type="email" id="emailAddress" name="emailAddress" placeholder="Email address" class="mt-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500 sm:text-sm p-2 border border-gray-400">
+                        <p class="text-xs text-gray-400 mt-1" id="contact-validation-message">Please provide either phone number or email address</p>
+                    </div>
+                    <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg transition duration-200">Sign In</button>
+                </form>
+            </div>
+        </div>
+
+        <div id="current-visitors-view" class="hidden p-6">
+            <div class="bg-white p-6 rounded-lg shadow-md text-gray-800">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl font-bold">Current Visitors</h2>
+                    <button id="refresh-current" class="bg-red-600 text-white py-1 px-3 rounded-lg flex items-center">
+                        <svg class="h-4 w-4 mr-1" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.645 3.176l-.41-.304a5.002 5.002 0 00-8.868 2.054L8 14h5v-3l-2-2-2 2h3v-2H5a1 1 0 01-1-1V5a1 1 0 011-1h1a1 1 0 000-2H5a3 3 0 00-3 3v4a3 3 0 003 3h2v3a1 1 0 002 0v-3h1a3 3 0 003-3V7.27a7.002 7.002 0 01-11.233-1.07l-.44.305a9.002 9.002 0 0013.882-6.556z" clip-rule="evenodd"></path></svg>
+                        Refresh
+                    </button>
+                </div>
+                <p id="current-visitors-count" class="text-sm text-gray-500 mb-4"></p>
+                <div class="mb-4">
+                    <input type="text" id="search-current" placeholder="Search visitors by name..." class="w-full rounded-md border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500 sm:text-sm p-2 border border-gray-400">
+                </div>
+                <div id="current-visitors-list" class="space-y-3">
+                    </div>
+            </div>
+        </div>
+
+        <div id="check-out-view" class="hidden p-6">
+            <div class="bg-white p-6 rounded-lg shadow-md text-gray-800">
+                <h2 class="text-2xl font-bold mb-2">Visitor Check-Out</h2>
+                <p class="text-sm text-gray-500 mb-6">Find your name to complete your visit</p>
+                <div class="mb-4">
+                    <input type="text" id="search-checkout" placeholder="Search for your name" class="w-full rounded-md border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500 sm:text-sm p-2 border border-gray-400">
+                </div>
+                <div id="checkout-list" class="space-y-3">
+                    </div>
+            </div>
+        </div>
+
+        <div id="past-visitors-view" class="hidden p-6">
+            <div class="bg-white p-6 rounded-lg shadow-md text-gray-800">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl font-bold">Past Visitors</h2>
+                    <button id="refresh-past" class="bg-red-600 text-white py-1 px-3 rounded-lg flex items-center">
+                        <svg class="h-4 w-4 mr-1" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.645 3.176l-.41-.304a5.002 5.002 0 00-8.868 2.054L8 14h5v-3l-2-2-2 2h3v-2H5a1 1 0 01-1-1V5a1 1 0 011-1h1a1 1 0 000-2H5a3 3 0 00-3 3v4a3 3 0 003 3h2v3a1 1 0 002 0v-3h1a3 3 0 003-3V7.27a7.002 7.002 0 01-11.233-1.07l-.44.305a9.002 9.002 0 0013.882-6.556z" clip-rule="evenodd"></path></svg>
+                        Refresh
+                    </button>
+                </div>
+                <p id="past-visitors-count" class="text-sm text-gray-500 mb-4"></p>
+                <div class="mb-4">
+                    <input type="text" id="search-past" placeholder="Search visitors by name or company" class="w-full rounded-md border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500 sm:text-sm p-2 border border-gray-400">
+                </div>
+                <div id="past-visitors-list" class="space-y-3">
+                    <div id="no-past-visitors" class="text-center text-gray-400 p-8">
+                        <svg class="mx-auto h-12 w-12 text-gray-300" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l3 3a1 1 0 001.414-1.414L11 9.586V6z" clip-rule="evenodd"></path></svg>
+                        <p class="mt-2 text-sm">No past visitors yet</p>
+                        <p class="text-xs">Past check-outs will appear here</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
