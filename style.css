@@ -4,11 +4,3 @@
     width: 83%;
     margin-top: 10px;
 }
-
-/* On screens wider than 768px, it will take up 90% of the viewport height */
-@media (min-width: 768px) {
-    #app-container {
-        height: 90vh;
-        max-width: 550px;
-    }
-}
