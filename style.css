@@ -1,14 +1,6 @@
 /* Custom Styles */
 /* Sets the main container to take up the full viewport height on mobile */
 #app-container {
-    height: 100vh;
     width: 90%;
 }
 
-/* On screens wider than 768px, it will take up 90% of the viewport height */
-@media (min-width: 768px) {
-    #app-container {
-        height: 90vh;
-        width: 100%;
-    }
-}
