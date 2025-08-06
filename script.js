@@ -1,5 +1,3 @@
-// This is the correct way to make the function globally accessible.
-// It must be defined outside of the DOMContentLoaded listener.
 window.showView = function(viewId) {
     const allViews = document.querySelectorAll('#home-view, #check-in-view, #current-visitors-view, #check-out-view, #past-visitors-view');
     const backButton = document.getElementById('back-to-home');
@@ -16,35 +14,37 @@ window.showView = function(viewId) {
         backButton.classList.remove('hidden');
     }
 
-    // --- These sections auto-load the visitor lists and clear search bars ---
     if (viewId === 'current-visitors-view') {
         const currentVisitors = JSON.parse(localStorage.getItem('currentVisitors')) || [];
         displayCurrentVisitors(currentVisitors);
-        // Also ensure the search bar is cleared
         document.getElementById('search-current').value = '';
     }
     if (viewId === 'past-visitors-view') {
         const pastVisitors = JSON.parse(localStorage.getItem('pastVisitors')) || [];
         displayPastVisitors(pastVisitors);
-        // Also ensure the search bar is cleared
         document.getElementById('search-past').value = '';
     }
     if (viewId === 'check-out-view') {
         const currentVisitors = JSON.parse(localStorage.getItem('currentVisitors')) || [];
         displayCheckoutList(currentVisitors);
-        // Also ensure the search bar is cleared
         document.getElementById('search-checkout').value = '';
     }
 }
 
 
 document.addEventListener('DOMContentLoaded', () => {
+    // --- Event listeners to handle button clicks (new, more robust method) ---
+    document.getElementById('check-in-button').addEventListener('click', () => showView('check-in-view'));
+    document.getElementById('current-visitors-button').addEventListener('click', () => showView('current-visitors-view'));
+    document.getElementById('check-out-button').addEventListener('click', () => showView('check-out-view'));
+    document.getElementById('past-visitors-button').addEventListener('click', () => showView('past-visitors-view'));
+    document.getElementById('back-to-home').addEventListener('click', () => showView('home-view'));
+
     // --- Helper Functions and Initial Setup ---
     const appContainer = document.getElementById('app-container');
     const allViews = document.querySelectorAll('#home-view, #check-in-view, #current-visitors-view, #check-out-view, #past-visitors-view');
     const backButton = document.getElementById('back-to-home');
 
-    // Load visitors from localStorage (initial load, but functions below will re-fetch)
     let currentVisitors = JSON.parse(localStorage.getItem('currentVisitors')) || [];
     let pastVisitors = JSON.parse(localStorage.getItem('pastVisitors')) || [];
 
@@ -70,11 +70,9 @@ document.addEventListener('DOMContentLoaded', () => {
     checkInForm.addEventListener('submit', (e) => {
         e.preventDefault();
 
-        // Get contact info fields
         const phoneNumber = document.getElementById('phoneNumber').value;
         const emailAddress = document.getElementById('emailAddress').value;
 
-        // Validation for mandatory contact info
         if (!phoneNumber && !emailAddress) {
             const validationMessage = document.getElementById('contact-validation-message');
             validationMessage.textContent = 'Please provide either a phone number or email address.';
@@ -88,23 +86,18 @@ document.addEventListener('DOMContentLoaded', () => {
             lastName: document.getElementById('lastName').value,
             companyName: document.getElementById('companyName').value,
             purpose: document.getElementById('purpose').value,
-            contact: phoneNumber || emailAddress, // Store whichever is provided
-            checkInTime: new Date().toISOString(), // Store as ISO string for sorting
+            contact: phoneNumber || emailAddress,
+            checkInTime: new Date().toISOString(),
         };
 
-        // We update the local variables and localStorage. The showView function will read the latest.
         currentVisitors.push(newVisitor);
         localStorage.setItem('currentVisitors', JSON.stringify(currentVisitors));
 
-        // Clear form
         checkInForm.reset();
 
-        // Show a confirmation message before returning to home view
         const checkInView = document.getElementById('check-in-view');
-        // --- FIX: Hide the entire container, not just the form ---
         const checkInContainer = document.getElementById('check-in-container');
         checkInContainer.classList.add('hidden');
-        // Create and show a success message
         const successMessage = document.createElement('div');
         successMessage.className = "p-6 text-center";
         successMessage.innerHTML = `
@@ -118,7 +111,6 @@ document.addEventListener('DOMContentLoaded', () => {
         checkInView.appendChild(successMessage);
         
         setTimeout(() => {
-            // Restore the form and remove the success message
             checkInContainer.classList.remove('hidden');
             checkInView.removeChild(successMessage);
             showView('home-view');
@@ -138,7 +130,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         visitors.forEach(visitor => {
             const checkInDate = new Date(visitor.checkInTime);
-            const timeDiff = Math.round((new Date() - checkInDate) / 60000); // Difference in minutes
+            const timeDiff = Math.round((new Date() - checkInDate) / 60000);
             
             const item = document.createElement('div');
             item.className = 'bg-gray-100 p-4 rounded-lg flex items-center shadow border border-gray-400';
@@ -164,7 +156,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const searchCurrentInput = document.getElementById('search-current');
     searchCurrentInput.addEventListener('input', (e) => {
         const searchTerm = e.target.value.toLowerCase();
-        // Always read the latest data for searching
         const currentVisitors = JSON.parse(localStorage.getItem('currentVisitors')) || [];
         const filteredVisitors = currentVisitors.filter(visitor => 
             visitor.firstName.toLowerCase().includes(searchTerm) || 
@@ -213,24 +204,20 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function checkOutVisitor(visitorId) {
-        // Read latest data for check-out
         let currentVisitors = JSON.parse(localStorage.getItem('currentVisitors')) || [];
         let pastVisitors = JSON.parse(localStorage.getItem('pastVisitors')) || [];
 
         const visitorIndex = currentVisitors.findIndex(v => v.id === visitorId);
         if (visitorIndex !== -1) {
             const visitor = currentVisitors[visitorIndex];
-            visitor.checkOutTime = new Date().toISOString(); // Add check-out time
+            visitor.checkOutTime = new Date().toISOString();
             
-            // Move visitor from current to past
             currentVisitors.splice(visitorIndex, 1);
             pastVisitors.push(visitor);
 
-            // Update localStorage
             localStorage.setItem('currentVisitors', JSON.stringify(currentVisitors));
             localStorage.setItem('pastVisitors', JSON.stringify(pastVisitors));
 
-            // Show success message
             const checkoutView = document.getElementById('check-out-view');
             const checkoutFormContainer = checkoutView.querySelector('.bg-white.p-6');
             checkoutFormContainer.classList.add('hidden');
@@ -248,7 +235,6 @@ document.addEventListener('DOMContentLoaded', () => {
             checkoutView.appendChild(successMessage);
 
             setTimeout(() => {
-                // Restore the original content and remove the success message
                 checkoutFormContainer.classList.remove('hidden');
                 checkoutView.removeChild(successMessage);
                 showView('home-view');
@@ -258,79 +244,4 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const searchCheckoutInput = document.getElementById('search-checkout');
     searchCheckoutInput.addEventListener('input', (e) => {
-        const searchTerm = e.target.value.toLowerCase();
-        const currentVisitors = JSON.parse(localStorage.getItem('currentVisitors')) || [];
-        const filteredVisitors = currentVisitors.filter(visitor => 
-            visitor.firstName.toLowerCase().includes(searchTerm) || 
-            visitor.lastName.toLowerCase().includes(searchTerm)
-        );
-        displayCheckoutList(filteredVisitors);
-    });
-
-    // --- Past Visitors Logic ---
-    function displayPastVisitors(visitors) {
-        const list = document.getElementById('past-visitors-list');
-        list.innerHTML = '';
-        document.getElementById('past-visitors-count').textContent = `${visitors.length} Past Visitors`;
-
-        if (visitors.length === 0) {
-            list.innerHTML = `<div id="no-past-visitors" class="text-center text-gray-400 p-8">
-                <svg class="mx-auto h-12 w-12 text-gray-300" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l3 3a1 1 0 001.414-1.414L11 9.586V6z" clip-rule="evenodd"></path></svg>
-                <p class="mt-2 text-sm">No past visitors yet</p>
-                <p class="text-xs">Past check-outs will appear here</p>
-            </div>`;
-            return;
-        }
-
-        visitors.sort((a, b) => new Date(b.checkOutTime) - new Date(a.checkOutTime));
-
-        visitors.forEach(visitor => {
-            const checkInDate = new Date(visitor.checkInTime);
-            const checkOutDate = new Date(visitor.checkOutTime);
-            
-            // Define options for combined date and time
-            const datetimeOptions = {
-                year: 'numeric', month: 'short', day: 'numeric',
-                hour: 'numeric', minute: 'numeric', hour12: true
-            };
-
-            const item = document.createElement('div');
-            item.className = 'bg-gray-100 p-4 rounded-lg flex items-center shadow border border-gray-400';
-            item.innerHTML = `
-                <div class="h-10 w-10 flex items-center justify-center bg-gray-300 rounded-full mr-4 text-sm font-bold text-gray-700">
-                    ${visitor.firstName[0].toUpperCase()}${visitor.lastName[0].toUpperCase()}
-                </div>
-                <div>
-                    <h3 class="font-bold">${visitor.firstName} ${visitor.lastName}</h3>
-                    <p class="text-sm text-gray-500">${visitor.purpose} ${visitor.companyName ? `with ${visitor.companyName}` : ''}</p>
-                    <p class="text-xs text-gray-400">${visitor.contact || 'No contact info provided'}</p>
-                </div>
-                <div class="ml-auto text-right text-sm">
-                    <p class="text-gray-500">Check-in: ${checkInDate.toLocaleString('en-US', datetimeOptions)}</p>
-                    <p class="text-gray-500">Checked out: ${checkOutDate.toLocaleString('en-US', datetimeOptions)}</p>
-                </div>
-            `;
-            list.appendChild(item);
-        });
-    }
-
-    const searchPastInput = document.getElementById('search-past');
-    searchPastInput.addEventListener('input', (e) => {
-        const searchTerm = e.target.value.toLowerCase();
-        const pastVisitors = JSON.parse(localStorage.getItem('pastVisitors')) || [];
-        const filteredVisitors = pastVisitors.filter(visitor => 
-            visitor.firstName.toLowerCase().includes(searchTerm) || 
-            visitor.lastName.toLowerCase().includes(searchTerm) ||
-            (visitor.companyName && visitor.companyName.toLowerCase().includes(searchTerm))
-        );
-        displayPastVisitors(filteredVisitors);
-    });
-
-    document.getElementById('refresh-past').addEventListener('click', () => {
-        const pastVisitors = JSON.parse(localStorage.getItem('pastVisitors')) || [];
-        displayPastVisitors(pastVisitors);
-    });
-
-    // Initial view
-    showView('home-view');
-});
+        const searchTerm = e
