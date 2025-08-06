@@ -135,8 +135,8 @@ function displayPastVisitors(visitors) {
         };
 
         const contactInfoHTML = `
-            ${visitor.phoneNumber ? `<p class="text-xs text-gray-400">${visitor.phoneNumber}</p>` : ''}
-            ${visitor.emailAddress ? `<p class="text-xs text-gray-400">${visitor.emailAddress}</p>` : ''}
+            ${visitor.phoneNumber ? `<p class="text-xs text-gray-400">Phone: ${visitor.phoneNumber}</p>` : ''}
+            ${visitor.emailAddress ? `<p class="text-xs text-gray-400">Email: ${visitor.emailAddress}</p>` : ''}
         `;
 
         const item = document.createElement('div');
@@ -264,6 +264,4 @@ document.addEventListener('DOMContentLoaded', () => {
             <svg class="mx-auto h-16 w-16 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
             </svg>
-            <h2 class="mt-4 text-2xl font-bold">You are now checked in!</h2>
-            <p class="mt-2 text-gray-600">Welcome to Shaver Industries.</p>
-            <p class="mt-4 text
+            <h2 class="mt-4 text-
