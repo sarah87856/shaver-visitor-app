@@ -78,7 +78,7 @@ function displayCheckoutList(visitors) {
     list.innerHTML = '';
     
     if (visitors.length === 0) {
-         list.innerHTML = '<div class="text-center text-gray-400 p-8"><p class="mt-2 text-sm">No visitors to check out.</p></div>';
+        list.innerHTML = '<div class="text-center text-gray-400 p-8"><p class="mt-2 text-sm">No visitors to check out.</p></div>';
         return;
     }
 
@@ -229,8 +229,16 @@ document.addEventListener('DOMContentLoaded', () => {
     checkInForm.addEventListener('submit', (e) => {
         e.preventDefault();
 
-        const phoneNumber = document.getElementById('phoneNumber').value;
+        const phoneNumber = document.getElementById('phone-number').value;
         const emailAddress = document.getElementById('emailAddress').value;
+
+        // FIX: Added validation to check if phone number meets minlength
+        if (phoneNumber.length > 0 && phoneNumber.length < 10) {
+            const validationMessage = document.getElementById('contact-validation-message');
+            validationMessage.textContent = 'Phone number must be at least 10 digits.';
+            validationMessage.classList.add('text-red-500');
+            return;
+        }
 
         if (!phoneNumber && !emailAddress) {
             const validationMessage = document.getElementById('contact-validation-message');
