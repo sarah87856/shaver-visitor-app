@@ -2,14 +2,14 @@
 /* Sets the main container to take up the full viewport height on mobile */
 #app-container {
     width: 83%;
-    margin-top: 10px;
+    margin-top: 35px;
 }
 
 /* On screens wider than 768px, it will take up 90% of the viewport height */
-@media (min-width: 768px) {
+@media (min-width: 850px) {
     #app-container {
         height: 90vh;
         max-width: 550px;
-        margin-top: 10px;
+        margin-top: 65px;
     }
 }
