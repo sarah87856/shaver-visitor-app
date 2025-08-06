@@ -46,8 +46,8 @@ function displayCurrentVisitors(visitors) {
         const timeDiff = Math.round((new Date() - checkInDate) / 60000);
         
         const contactInfoHTML = `
-            ${visitor.phoneNumber ? `<p class="text-xs text-gray-400">Phone: ${visitor.phoneNumber}</p>` : ''}
-            ${visitor.emailAddress ? `<p class="text-xs text-gray-400">Email: ${visitor.emailAddress}</p>` : ''}
+            ${visitor.phoneNumber ? `<p class="text-xs text-gray-400">${visitor.phoneNumber}</p>` : ''}
+            ${visitor.emailAddress ? `<p class="text-xs text-gray-400">${visitor.emailAddress}</p>` : ''}
         `;
 
         const item = document.createElement('div');
@@ -84,8 +84,8 @@ function displayCheckoutList(visitors) {
         const checkInDate = new Date(visitor.checkInTime);
 
         const contactInfoHTML = `
-            ${visitor.phoneNumber ? `<p class="text-xs text-gray-400">Phone: ${visitor.phoneNumber}</p>` : ''}
-            ${visitor.emailAddress ? `<p class="text-xs text-gray-400">Email: ${visitor.emailAddress}</p>` : ''}
+            ${visitor.phoneNumber ? `<p class="text-xs text-gray-400">${visitor.phoneNumber}</p>` : ''}
+            ${visitor.emailAddress ? `<p class="text-xs text-gray-400">${visitor.emailAddress}</p>` : ''}
         `;
 
         const item = document.createElement('div');
