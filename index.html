@@ -3,143 +3,167 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shaver Industries Visitor System</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    <title>Shaver Industries - Visitor Check-In</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .hidden { display: none; }
+    </style>
 </head>
-<body class="bg-white flex items-center justify-center min-h-screen">
+<body class="bg-gray-200 font-sans">
 
-    <div id="app-container" class="text-gray-800 w-full max-w-sm h-screen md:h-auto overflow-y-auto relative">
-        <div class="px-6 py-4 flex justify-between items-center">
-            <button id="back-to-home" class="hidden text-red-500 font-bold">
-                <svg class="h-5 w-5 inline-block mr-1" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"></path>
-                </svg>
+    <div class="container mx-auto p-4 max-w-lg">
+        
+        <header class="flex items-center justify-between mb-8">
+            <button id="back-to-home" class="hidden text-red-600 font-bold flex items-center">
+                <svg class="h-5 w-5 mr-1" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
                 Back to Home
             </button>
-            <span id="current-time" class="text-xs text-gray-400 ml-auto hidden"></span>
-        </div>
+            <div id="current-date" class="ml-auto text-sm text-gray-500"></div>
+        </header>
 
-        <div id="home-view" class="p-6 text-center">
-            <img src="images/Shaver_Logo.jpg" alt="Shaver Industries Logo" class="mx-auto w-2/3 mb-4">
-            <h1 class="text-3xl font-bold mb-1">Welcome to Shaver!</h1>
-            <p class="text-gray-600 mb-6">Visitor Check-In System</p>
-            <p id="current-date" class="text-gray-600 text-sm mb-8"></p>
-
-            <div class="space-y-4">
-                <button id="check-in-button" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-4 px-6 rounded-lg transition duration-200 border border-gray-400">
-                    <svg class="h-6 w-6 inline-block mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path></svg>
+        <div id="home-view" class="bg-white p-8 rounded-lg shadow-xl text-center">
+            <img src="Shaver_Logo.jpg" alt="Shaver Industries Logo" class="mx-auto h-24 mb-4">
+            <h1 class="text-3xl font-bold text-gray-800">SHAVER INDUSTRIES</h1>
+            <p class="text-gray-500 mb-8">Visitor Check-In System</p>
+            <div id="current-time" class="text-xl font-medium text-gray-600 mb-8"></div>
+            
+            <button id="check-in-button" class="w-full bg-red-600 text-white font-bold py-4 px-6 rounded-lg mb-4 text-xl shadow-lg hover:bg-red-700 transition duration-300">
+                <div class="flex items-center justify-center">
+                    <svg class="h-6 w-6 mr-2" fill="currentColor" viewBox="0 0 20 20"><path d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" fill-rule="evenodd"></path></svg>
                     Check In
-                </button>
-                <button id="current-visitors-button" class="w-full bg-gray-200 hover:bg-gray-300 text-red-600 font-bold py-4 px-6 rounded-lg transition duration-200 border border-gray-400">
-                    <svg class="h-6 w-6 inline-block mr-2" fill="currentColor" viewBox="0 0 20 20"><path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM10 12a4 4 0 00-8 0v1h8v-1zM10 15a4 4 0 00-8 0v3h8v-3z"></path></svg>
+                </div>
+            </button>
+            <button id="current-visitors-button" class="w-full bg-white text-gray-800 font-bold py-4 px-6 rounded-lg mb-4 text-xl shadow-lg border-2 border-gray-300 hover:bg-gray-100 transition duration-300">
+                <div class="flex items-center justify-center">
+                    <svg class="h-6 w-6 mr-2 text-red-600" fill="currentColor" viewBox="0 0 20 20"><path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.974 5.974 0 004 15v3H1v-3a3 3 0 013.75-2.906z"></path></svg>
                     Current Visitors
-                </button>
-                <button id="check-out-button" class="w-full bg-gray-600 hover:bg-gray-700 text-white font-bold py-4 px-6 rounded-lg transition duration-200 border border-gray-400">
-                    <svg class="h-6 w-6 inline-block mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path></svg>
+                </div>
+            </button>
+            <button id="check-out-button" class="w-full bg-gray-700 text-white font-bold py-4 px-6 rounded-lg mb-4 text-xl shadow-lg hover:bg-gray-800 transition duration-300">
+                <div class="flex items-center justify-center">
+                    <svg class="h-6 w-6 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l3 3a1 1 0 001.414-1.414L11 9.586V6z" clip-rule="evenodd"></path></svg>
                     Check Out
-                </button>
-                <button id="past-visitors-button" class="w-full bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-4 px-6 rounded-lg transition duration-200 border border-gray-400">
-                    <svg class="h-6 w-6 inline-block mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l3 3a1 1 0 001.414-1.414L11 9.586V6z" clip-rule="evenodd"></path></svg>
+                </div>
+            </button>
+            <button id="past-visitors-button" class="w-full bg-gray-100 text-gray-700 font-bold py-4 px-6 rounded-lg text-xl shadow-lg hover:bg-gray-200 transition duration-300">
+                <div class="flex items-center justify-center">
+                    <svg class="h-6 w-6 mr-2 text-gray-500" fill="currentColor" viewBox="0 0 20 20"><path d="M10 12a2 2 0 100-4 2 2 0 000 4z"></path><path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"></path></svg>
                     Past Visitors
-                </button>
-            </div>
-            <p class="mt-8 text-sm text-gray-500">Powered by Shaver Industries Technology</p>
+                </div>
+            </button>
+            <p class="mt-8 text-xs text-gray-400">Powered by Shaver Industries Technology</p>
         </div>
 
-        <div id="check-in-view" class="hidden p-6">
-            <div id="check-in-container" class="bg-white p-6 rounded-lg shadow-md text-gray-800">
-                <h2 class="text-2xl font-bold mb-2">Visitor Check-In</h2>
-                <p class="text-sm text-gray-500 mb-6">Please fill out your information to sign in</p>
+        <div id="check-in-view" class="hidden">
+            <div id="check-in-container" class="bg-white p-6 rounded-lg shadow-xl">
+                <h2 class="text-2xl font-bold text-gray-800 mb-2">Visitor Check-In</h2>
+                <p class="text-gray-500 mb-6">Please fill out your information to sign in</p>
                 <form id="check-in-form" class="space-y-4">
                     <div>
-                        <label for="firstName" class="block text-sm font-medium text-gray-700">First Name *</label>
-                        <input type="text" id="firstName" name="firstName" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500 sm:text-sm p-2 border border-gray-400">
+                        <label for="firstName" class="block text-sm font-medium text-gray-700">First Name <span class="text-red-500">*</span></label>
+                        <input type="text" id="firstName" name="firstName" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500">
                     </div>
                     <div>
-                        <label for="lastName" class="block text-sm font-medium text-gray-700">Last Name *</label>
-                        <input type="text" id="lastName" name="lastName" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500 sm:text-sm p-2 border border-gray-400">
+                        <label for="lastName" class="block text-sm font-medium text-gray-700">Last Name <span class="text-red-500">*</span></label>
+                        <input type="text" id="lastName" name="lastName" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500">
                     </div>
                     <div>
-                        <label for="companyName" class="block text-sm font-medium text-gray-700">Company Name</label>
-                        <input type="text" id="companyName" name="companyName" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500 sm:text-sm p-2 border border-gray-400">
+                        <label for="companyName" class="block text-sm font-medium text-gray-700">Company Name (optional)</label>
+                        <input type="text" id="companyName" name="companyName" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500">
                     </div>
                     <div>
-                        <label for="purpose" class="block text-sm font-medium text-gray-700">Purpose of Visit *</label>
-                        <select id="purpose" name="purpose" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500 sm:text-sm p-2 border border-gray-400">
+                        <label for="purpose" class="block text-sm font-medium text-gray-700">Purpose of Visit <span class="text-red-500">*</span></label>
+                        <select id="purpose" name="purpose" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500">
                             <option value="">Select purpose...</option>
                             <option value="Interview">Interview</option>
                             <option value="Meeting">Meeting</option>
                             <option value="Delivery">Delivery</option>
-                            <option value="Maintenance">Maintenance</option>
+                            <option value="Contractor">Contractor</option>
                             <option value="Other">Other</option>
                         </select>
                     </div>
                     <div>
-                        <p class="block text-sm font-medium text-gray-700">Contact Information</p>
-                        <input type="tel" id="phoneNumber" name="phoneNumber" placeholder="Phone number" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500 sm:text-sm p-2 border border-gray-400">
-                        <input type="email" id="emailAddress" name="emailAddress" placeholder="Email address" class="mt-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500 sm:text-sm p-2 border border-gray-400">
-                        <p class="text-xs text-gray-400 mt-1" id="contact-validation-message">Please provide either phone number or email address</p>
+                        <label class="block text-sm font-medium text-gray-700">Contact Information</label>
+                        <div class="mt-1 space-y-2">
+                             <input type="tel" id="phoneNumber" name="phoneNumber" placeholder="Phone number" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500">
+                             <input type="email" id="emailAddress" name="emailAddress" placeholder="Email address" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500">
+                        </div>
+                         <p id="contact-validation-message" class="mt-2 text-sm text-red-500 hidden"></p>
                     </div>
-                    <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg transition duration-200">Sign In</button>
+                    <button type="submit" class="w-full bg-red-600 text-white font-bold py-3 px-4 rounded-lg text-lg shadow-lg hover:bg-red-700 transition duration-300">Sign In</button>
                 </form>
             </div>
         </div>
 
-        <div id="current-visitors-view" class="hidden p-6">
-            <div class="bg-white p-6 rounded-lg shadow-md text-gray-800">
-                <div class="flex justify-between items-center mb-4">
-                    <h2 class="text-xl font-bold">Current Visitors</h2>
+        <div id="current-visitors-view" class="hidden">
+            <div class="bg-white p-6 rounded-lg shadow-xl">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-2xl font-bold text-gray-800">Current Visitors</h2>
                     <button id="refresh-current" class="bg-red-600 text-white py-1 px-3 rounded-lg flex items-center">
-                        <svg class="h-4 w-4 mr-1" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.645 3.176l-.41-.304a5.002 5.002 0 00-8.868 2.054L8 14h5v-3l-2-2-2 2h3v-2H5a1 1 0 01-1-1V5a1 1 0 011-1h1a1 1 0 000-2H5a3 3 0 00-3 3v4a3 3 0 003 3h2v3a1 1 0 002 0v-3h1a3 3 0 003-3V7.27a7.002 7.002 0 01-11.233-1.07l-.44.305a9.002 9.002 0 0013.882-6.556z" clip-rule="evenodd"></path></svg>
+                        <svg class="h-4 w-4 mr-1" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a8 8 0 00-6.4 12.8l-1.3 1.3a1 1 0 001.4 1.4l1.3-1.3A8 8 0 1010 2zm0 14a6 6 0 110-12 6 6 0 010 12z"></path><path d="M10 4a1 1 0 00-1 1v4a1 1 0 002 0V5a1 1 0 00-1-1z"></path></svg>
                         Refresh
                     </button>
                 </div>
-                <p id="current-visitors-count" class="text-sm text-gray-500 mb-4"></p>
+                <p id="current-visitors-count" class="text-gray-500 mb-4"></p>
                 <div class="mb-4">
-                    <input type="text" id="search-current" placeholder="Search visitors by name..." class="w-full rounded-md border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500 sm:text-sm p-2 border border-gray-400">
+                    <label for="search-current" class="sr-only">Search visitors</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <svg class="h-5 w-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"></path></svg>
+                        </div>
+                        <input type="text" id="search-current" placeholder="Search visitors by name or company" class="block w-full pl-10 pr-3 py-2 rounded-md border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500">
+                    </div>
                 </div>
-                <div id="current-visitors-list" class="space-y-3">
+                <div id="current-visitors-list" class="space-y-4">
                     </div>
             </div>
         </div>
 
-        <div id="check-out-view" class="hidden p-6">
-            <div class="bg-white p-6 rounded-lg shadow-md text-gray-800">
-                <h2 class="text-2xl font-bold mb-2">Visitor Check-Out</h2>
-                <p class="text-sm text-gray-500 mb-6">Find your name to complete your visit</p>
+        <div id="check-out-view" class="hidden">
+            <div class="bg-white p-6 rounded-lg shadow-xl">
+                <h2 class="text-2xl font-bold text-gray-800 mb-2">Visitor Check-Out</h2>
+                <p class="text-gray-500 mb-6">Find your name to complete your visit</p>
                 <div class="mb-4">
-                    <input type="text" id="search-checkout" placeholder="Search for your name" class="w-full rounded-md border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500 sm:text-sm p-2 border border-gray-400">
+                    <label for="search-checkout" class="sr-only">Search for your name</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <svg class="h-5 w-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"></path></svg>
+                        </div>
+                        <input type="text" id="search-checkout" placeholder="Search for your name" class="block w-full pl-10 pr-3 py-2 rounded-md border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500">
+                    </div>
                 </div>
-                <div id="checkout-list" class="space-y-3">
+                <div id="checkout-list" class="space-y-4">
                     </div>
             </div>
         </div>
 
-        <div id="past-visitors-view" class="hidden p-6">
-            <div class="bg-white p-6 rounded-lg shadow-md text-gray-800">
-                <div class="flex justify-between items-center mb-4">
-                    <h2 class="text-xl font-bold">Past Visitors</h2>
+        <div id="past-visitors-view" class="hidden">
+            <div class="bg-white p-6 rounded-lg shadow-xl">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-2xl font-bold text-gray-800">Past Visitors</h2>
                     <button id="refresh-past" class="bg-red-600 text-white py-1 px-3 rounded-lg flex items-center">
-                        <svg class="h-4 w-4 mr-1" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.645 3.176l-.41-.304a5.002 5.002 0 00-8.868 2.054L8 14h5v-3l-2-2-2 2h3v-2H5a1 1 0 01-1-1V5a1 1 0 011-1h1a1 1 0 000-2H5a3 3 0 00-3 3v4a3 3 0 003 3h2v3a1 1 0 002 0v-3h1a3 3 0 003-3V7.27a7.002 7.002 0 01-11.233-1.07l-.44.305a9.002 9.002 0 0013.882-6.556z" clip-rule="evenodd"></path></svg>
+                        <svg class="h-4 w-4 mr-1" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a8 8 0 00-6.4 12.8l-1.3 1.3a1 1 0 001.4 1.4l1.3-1.3A8 8 0 1010 2zm0 14a6 6 0 110-12 6 6 0 010 12z"></path><path d="M10 4a1 1 0 00-1 1v4a1 1 0 002 0V5a1 1 0 00-1-1z"></path></svg>
                         Refresh
                     </button>
                 </div>
-                <p id="past-visitors-count" class="text-sm text-gray-500 mb-4"></p>
+                <p id="past-visitors-count" class="text-gray-500 mb-4"></p>
                 <div class="mb-4">
-                    <input type="text" id="search-past" placeholder="Search visitors by name or company" class="w-full rounded-md border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500 sm:text-sm p-2 border border-gray-400">
-                </div>
-                <div id="past-visitors-list" class="space-y-3">
-                    <div id="no-past-visitors" class="text-center text-gray-400 p-8">
-                        <svg class="mx-auto h-12 w-12 text-gray-300" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l3 3a1 1 0 001.414-1.414L11 9.586V6z" clip-rule="evenodd"></path></svg>
-                        <p class="mt-2 text-sm">No past visitors yet</p>
-                        <p class="text-xs">Past check-outs will appear here</p>
+                    <label for="search-past" class="sr-only">Search past visitors</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <svg class="h-5 w-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"></path></svg>
+                        </div>
+                        <input type="text" id="search-past" placeholder="Search visitors by name or company" class="block w-full pl-10 pr-3 py-2 rounded-md border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500">
                     </div>
                 </div>
+                <div id="past-visitors-list" class="space-y-4">
+                    </div>
             </div>
         </div>
+
     </div>
 
     <script src="script.js"></script>
+
 </body>
 </html>
