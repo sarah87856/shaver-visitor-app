@@ -199,8 +199,6 @@ function checkOutVisitor(visitorId) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    let currentVisitors = JSON.parse(localStorage.getItem('currentVisitors')) || [];
-    let pastVisitors = JSON.parse(localStorage.getItem('pastVisitors')) || [];
     
     document.getElementById('check-in-button').addEventListener('click', () => showView('check-in-view'));
     document.getElementById('current-visitors-button').addEventListener('click', () => showView('current-visitors-view'));
@@ -250,6 +248,7 @@ document.addEventListener('DOMContentLoaded', () => {
             checkInTime: new Date().toISOString(),
         };
 
+        let currentVisitors = JSON.parse(localStorage.getItem('currentVisitors')) || [];
         currentVisitors.push(newVisitor);
         localStorage.setItem('currentVisitors', JSON.stringify(currentVisitors));
 
